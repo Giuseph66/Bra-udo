@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Responsivo - Múltiplos Usuários</title>
+    <style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .chat-container {
+        width: 100%;
+        max-width: 500px;
+        height: 600px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+    
+    .chat-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    
+    .chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .chat-message {
+        background-color: #e0e0e0;
+        padding: 8px 12px;
+        border-radius: 5px;
+        max-width: 70%;
+        word-wrap: break-word;
+        align-self: flex-start;
+    }
+    
+    .chat-message.user-message {
+        background-color: #4CAF50;
+        color: white;
+        align-self: flex-end;
+    }
+    
+    .chat-message strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        background-color: #f1f1f1;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    
+    .chat-input select {
+        margin-right: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    
+    .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+    
+    .chat-input button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .chat-input button:hover {
+        background-color: #45a049;
+    }
+    
+    @media (max-width: 600px) {
+        .chat-container {
+            height: 100%;
+            border: none;
+            border-radius: 0;
+        }
+        
+        .chat-header, .chat-input {
+            padding: 8px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat ao Vivo</h2>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            {% for message in messages %}
+                <div class="chat-message {% if message.username == 'Usuário 1' %}user-message{% endif %}">
+                    <strong>{{ message.username }}:</strong> {{ message.content }} <small>{{ message.timestamp|date:"H:i" }}</small>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="chat-input">
+            <select id="user-select">
+                <option value="Usuário 1">Usuário 1</option>
+                <option value="Usuário 2">Usuário 2</option>
+                <option value="Usuário 3">Usuário 3</option>
+            </select>
+            <input type="text" id="message" placeholder="Digite sua mensagem..." />
+            <button id="send-button">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        const sendButton = document.getElementById('send-button');
+        const messageInput = document.getElementById('message');
+        const chatMessages = document.getElementById('chat-messages');
+        const userSelect = document.getElementById('user-select');
+
+        function fetchMessages() {
+            fetch('/chat/messages/')
+                .then(response => response.json())
+                .then(data => {
+                    chatMessages.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        const messageElement = document.createElement('div');
+                        messageElement.classList.add('chat-message');
+                        if (msg.username === 'Usuário 1') {
+                            messageElement.classList.add('user-message');
+                        }
+                        messageElement.innerHTML = `<strong>${msg.username}:</strong> ${msg.content} <small>${msg.timestamp}</small>`;
+                        chatMessages.appendChild(messageElement);
+                    });
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                });
+        }
+
+        sendButton.addEventListener('click', () => {
+            const messageText = messageInput.value;
+            const selectedUser = userSelect.value;
+
+            if (messageText.trim() !== '') {
+                fetch('/chat/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        username: selectedUser,
+                        content: messageText
+                    })
+                }).then(response => {
+                    if (response.status === 201) {
+                        messageInput.value = '';
+                        fetchMessages();
+                    }
+                });
+            }
+        });
+        setInterval(fetchMessages, 3000);
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+
+        fetchMessages();  
+    </script>
+</body>
+</html>

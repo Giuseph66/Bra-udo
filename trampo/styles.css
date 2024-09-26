@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: flex-end; /* Alinha os itens à direita */
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    margin-right: 20px; /* Adiciona margem à direita */
+    position: absolute;
+    right: 0; /* Posiciona o chat à direita */
+}
+
+.chat-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    background-color: #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 5px;
+    max-width: 70%;
+    word-wrap: break-word;
+    align-self: flex-start;
+}
+
+.chat-message.user-message {
+    background-color: #4CAF50;
+    color: white;
+    align-self: flex-end;
+}
+
+.chat-message strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.chat-input select {
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background-color: #45a049;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .chat-container {
+        height: 100%;
+        border: none;
+        border-radius: 0;
+        margin-right: 0; /* Remove a margem em telas menores */
+        right: 0; /* Mantém o chat à direita */
+        width: 100vw; /* Ocupa toda a largura da tela em dispositivos móveis */
+    }
+    
+    .chat-header, .chat-input {
+        padding: 8px;
+    }
+}

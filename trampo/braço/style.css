@@ -1,0 +1,367 @@
+/* Estilos Gerais */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    color: #333;
+}
+
+/* Cabeçalho */
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+header p {
+    margin: 5px 0 0 0;
+    font-size: 1.1em;
+}
+
+/* Rodapé */
+footer {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Contêiner Principal */
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    margin-bottom: 60px; /* Espaço para o rodapé */
+}
+
+/* Estilo dos Motores */
+.container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 280px;
+    margin: 15px;
+    text-align: center;
+}
+
+.container h2 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+.slider-label {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.slider-values,
+.slider-controls {
+    font-size: 14px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.slider-values label,
+.slider-controls label {
+    width: 48%;
+}
+
+input[type="number"],
+input[type="range"] {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Estilo do Slider */
+input[type="range"] {
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 5px;
+    background: #ddd;
+    outline: none;
+    margin-top: 15px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Visualização do Ângulo */
+.angle-visual-container {
+    height: 100px;
+    width: 100%;
+    background-color: #f9f9f9;
+    position: relative;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.angle-visual {
+    width: 4px;
+    height: 90px;
+    background-color: #007bff;
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform-origin: bottom center;
+    transition: transform 0.2s ease;
+    border-radius: 2px;
+}
+
+/* Botões de Configuração */
+.config-buttons {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.config-buttons button,
+.config-buttons select {
+    padding: 10px 20px;
+    margin: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.config-buttons button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;/* Estilos Gerais */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f2f5;
+        margin: 0;
+        color: #333;
+    }
+    
+    /* Cabeçalho */
+    header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+    }
+    
+    header h1 {
+        margin: 0;
+        font-size: 2.5em;
+    }
+    
+    header p {
+        margin: 5px 0 0 0;
+        font-size: 1.1em;
+    }
+    
+    /* Rodapé */
+    footer {
+        background-color: #007bff;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+    }
+    
+    /* Contêiner Principal */
+    .main-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        margin-bottom: 60px; /* Espaço para o rodapé */
+    }
+    
+    /* Estilo dos Motores */
+    .container {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 20px;
+        width: 280px;
+        margin: 15px;
+        text-align: center;
+    }
+    
+    .container h2 {
+        margin-top: 0;
+        color: #007bff;
+    }
+    
+    .slider-label {
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    
+    .slider-values input{
+       color: #000000;
+        font-size: 20px;
+    }
+    .slider-values,
+    .slider-controls {
+        font-size: 20px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content:center;
+    }
+    
+    .slider-values label,
+    .slider-controls label {
+        width: 48%;
+    }
+    
+    input[type="number"],
+    input[type="range"] {
+        width: 100%;
+        padding: 6px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+    }
+    
+    /* Estilo do Slider */
+    input[type="range"] {
+        -webkit-appearance: none;
+        height: 6px;
+        border-radius: 5px;
+        background: #ddd;
+        outline: none;
+        margin-top: 15px;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #007bff;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #007bff;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Visualização do Ângulo */
+    .angle-visual-container {
+        height: 100px;
+        width: 100%;
+        background-color: #f9f9f9;
+        position: relative;
+        margin: 20px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .angle-visual {
+        width: 4px;
+        height: 90px;
+        background-color: #007bff;
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform-origin: bottom center;
+        transition: transform 0.2s ease;
+        border-radius: 2px;
+    }
+    
+    /* Botões de Configuração */
+    .config-buttons {
+        width: 100%;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .config-buttons button,
+    .config-buttons select {
+        padding: 10px 20px;
+        margin: 5px 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .config-buttons button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+    }
+    
+    .config-buttons button:hover {
+        background-color: #0056b3;
+    }
+    
+    .config-buttons select {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .container {
+            width: 90%;
+        }
+    }
+    
+    border-radius: 4px;
+}
+
+.config-buttons button:hover {
+    background-color: #0056b3;
+}
+
+.config-buttons select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+}
