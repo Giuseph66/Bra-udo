@@ -6,7 +6,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de 6 Motores</title>
     <link rel="stylesheet" href="style.css">
+</head><!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de 6 Motores</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
+<body>
+
+    <header>
+        <h1>Braçudo</h1>
+        <p>Projeto desenvolvido para a faculdade FASTECH por Giuseph, João, Rafael e Jean</p>
+    </header>
+    <!-- Contêiner principal -->
+    <div class="main-container">
+        <!-- Botões de Configuração -->
+        <div class="config-buttons">
+            <button onclick="saveConfiguration()">Salvar Configuração</button>
+            <select id="configurations-dropdown" onchange="loadSelectedConfiguration()">
+                <option value="">Selecione uma Configuração</option>
+                <!-- As opções serão preenchidas dinamicamente -->
+            </select>
+            <button onclick="loadSelectedConfiguration()">Carregar Configuração</button>
+        </div>
+
+        <!-- Motores 1 a 6 -->
+        <!-- Motor 1 -->
+        <div class="container" id="motor1-container">
+            <h2>Motor X_Y</h2>
+            <div class="slider-values">
+                <label>Velocidade: <input type="number" id="motor1-value_vel" value="0" min="200" max="2500" step="1" onclick="updateFromInput_vel('motor1')"></label>
+                <label>Angulo Atual: <input type="number" id="motor1-value" value="0" min="-90" max="90" step="1" oninput="updateFromInput('motor1')"></label>
+            </div>
+            <div class="slider-controls">
+                <label>Mínimo: <input type="number" id="motor1-min" value="-90" oninput="updateRange('motor1')"></label>
+                <label>Máximo: <input type="number" id="motor1-max" value="90" oninput="updateRange('motor1')"></label>
+            </div>
+            <div class="angle-visual-container">
+                <div class="angle-visual" id="motor1-line"></div>
+            </div>
+            <label class="slider-label">Controle (graus):</label>
+            <input type="range" id="motor1-slider" min="-90" max="90" value="0" oninput="updateValue('motor1')">
+        </div>
+
+        <!-- Motor 2 -->
+        <div class="container" id="motor2-container">
+            <h2>Motor Duplo</h2>
+            <div class="slider-values">
+                <label>Velocidade: <input type="number" id="motor2-value_vel" value="0" min="200" max="2500" step="1" onclick="updateFromInput_vel('motor2')"></label>
+                <label>Angulo Atual: <input type="number" id="motor2-value" value="0" min="-90" max="90" step="1"
+                    oninput="updateFromInput('motor2')"></label>
+                </div>
+                <div class="slider-controls">
+                <label>Mínimo: <input type="number" id="motor2-min" value="-90" oninput="updateRange('motor2')"></label>
+                <label>Máximo: <input type="number" id="motor2-max" value="90" oninput="updateRange('motor2')"></label>
+            </div>
+            <div class="angle-visual-container">
+                <div class="angle-visual" id="motor2-line"></div>
+            </div>
+            <label class="slider-label">Controle (graus):</label>
+            <input type="range" id="motor2-slider" min="-90" max="90" value="0" oninput="updateValue('motor2')">
+        </div>
+        
+        <!-- Motor 3 -->
+        <div class="container" id="motor3-container">
+            <h2>Motor Redutor</h2>
+            <div class="slider-values">
+                <label>Velocidade: <input type="number" id="motor3-value_vel" value="0" min="200" max="2500" step="1" onclick="updateFromInput_vel('motor3')"></label>
+                <label>Angulo Atual: <input type="number" id="motor3-value" value="0" min="-90" max="90" step="1"
+                    oninput="updateFromInput('motor3')"></label>
+                </div>
+                <div class="slider-controls">
+                <label>Mínimo: <input type="number" id="motor3-min" value="-90" oninput="updateRange('motor3')"></label>
+                <label>Máximo: <input type="number" id="motor3-max" value="90" oninput="updateRange('motor3')"></label>
+            </div>
+            <div class="angle-visual-container">
+                <div class="angle-visual" id="motor3-line"></div>
+            </div>
+            <label class="slider-label">Controle (graus):</label>
+            <input type="range" id="motor3-slider" min="-90" max="90" value="0" oninput="updateValue('motor3')">
+        </div>
+        
+        <!-- Motor 4 -->
+        <div class="container" id="motor4-container">
+            <h2>Motor 360</h2>
+            <div class="slider-values">
+                <label>Velocidade: <input type="number" id="motor4-value_vel" value="0" min="200" max="2500" step="1" onclick="updateFromInput_vel('motor4')"></label>
+                <label>Angulo Atual: <input type="number" id="motor4-value" value="0" min="-90" max="90" step="1"
+                    oninput="updateFromInput('motor4')"></label>
+                </div>
+                <div class="slider-controls">
+                    <label>Mínimo: <input type="number" id="motor4-min" value="-90" oninput="updateRange('motor4')"></label>
+                <label>Máximo: <input type="number" id="motor4-max" value="90" oninput="updateRange('motor4')"></label>
+            </div>
+            <div class="angle-visual-container">
+                <div class="angle-visual" id="motor4-line"></div>
+            </div>
+            <label class="slider-label">Controle (graus):</label>
+            <input type="range" id="motor4-slider" min="-90" max="90" value="0" oninput="updateValue('motor4')">
+        </div>
+        
+        <!-- Motor 5 -->
+        <div class="container" id="motor5-container">
+            <h2>Motor Garra</h2>
+            <div class="slider-values">
+                <label>Velocidade: <input type="number" id="motor5-value_vel" value="0" min="200" max="2500" step="1" onclick="updateFromInput_vel('motor5')"></label>
+                <label>Angulo Atual: <input type="number" id="motor5-value" value="0" min="-90" max="90" step="1"
+                        oninput="updateFromInput('motor5')"></label>
+            </div>
+            <div class="slider-controls">
+                <label>Mínimo: <input type="number" id="motor5-min" value="-90" oninput="updateRange('motor5')"></label>
+                <label>Máximo: <input type="number" id="motor5-max" value="90" oninput="updateRange('motor5')"></label>
+            </div>
+            <div class="angle-visual-container">
+                <div class="angle-visual" id="motor5-line"></div>
+            </div>
+            <label class="slider-label">Controle (graus):</label>
+            <input type="range" id="motor5-slider" min="-90" max="90" value="0" oninput="updateValue('motor5')">
+        </div>
+
+        <!-- Motor 6 
+        <div class="container" id="motor6-container">
+            <h2>Motor 6</h2>
+            <div class="slider-values">
+                <label>Angulo Atual: <input type="number" id="motor6-value" value="0" min="-90" max="90" step="1"
+                        oninput="updateFromInput('motor6')"></label>
+            </div>
+            <div class="slider-controls">
+                <label>Mínimo: <input type="number" id="motor6-min" value="-90" oninput="updateRange('motor6')"></label>
+                <label>Máximo: <input type="number" id="motor6-max" value="90" oninput="updateRange('motor6')"></label>
+            </div>
+            <div class="angle-visual-container">
+                <div class="angle-visual" id="motor6-line"></div>
+            </div>
+            <label class="slider-label">Controle (graus):</label>
+            <input type="range" id="motor6-slider" min="-90" max="90" value="0" oninput="updateValue('motor6')">
+        </div>
+    </div>-->
+
+    <footer>
+        <p>&copy; 2024 Braçudo - FASTECH</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
 
 <body>
 

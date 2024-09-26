@@ -195,7 +195,51 @@ function updateConfigurationsDropdown() {
         }
     }
 }
-
+function changeText(element, newText) {
+    element.innerHTML = newText;
+}
+function testMotor(motor) {
+    const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
+    const value = parseFloat(document.getElementById(motor + '-value').value);
+    let sentido="Direita"
+    if (value<0){
+        sentido="Esquerda"
+    }else if(value==0){
+        sentido="Nao meche"
+    }
+    const isConfirmed = confirm("Tem certeza que deseja testar o " +motor+" ?\n"
+        +"Velocidade: "+value_vel +"\n"
+        +"Sentido: "+sentido+"\n"
+        +"Qntd Rotação: "+value
+    );
+    if (isConfirmed) {
+        alert("Foi"); // Chama a função de teste do motor se o usuário confirmar
+    } else {
+        alert("Teste cancelado.");
+    }
+}
+function Subir_todos() {
+    for (let i = 1; i <= 5; i++) {
+    const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
+    const value = parseFloat(document.getElementById(motor + '-value').value);
+    let sentido="Direita"
+    if (value<0){
+        sentido="Esquerda"
+    }else if(value==0){
+        sentido="Nao meche"
+    }
+    const isConfirmed = confirm("Tem certeza que deseja testar o " +motor+" ?\n"
+        +"Velocidade: "+value_vel +"\n"
+        +"Sentido: "+sentido+"\n"
+        +"Qntd Rotação: "+value
+    );
+}
+if (isConfirmed) {
+    alert("Foi"); // Chama a função de teste do motor se o usuário confirmar
+} else {
+    alert("Teste cancelado.");
+}
+}
 // Chama a função para atualizar o menu suspenso ao carregar a página
 window.onload = function() {
     updateConfigurationsDropdown();

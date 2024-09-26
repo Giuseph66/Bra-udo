@@ -43,6 +43,18 @@ function updateFromInput(motor) {
     const line = document.getElementById(motor + '-line');
     line.style.transform = `rotate(${rotation}deg)`;
 }
+function updateFromInput_vel(motor) {
+    const valueInput = document.getElementById(motor + '-value_vel');
+    let value = parseFloat(valueInput.value);
+
+    if (value < 200) {
+        value = 200;
+    } else if (value > 2500) {
+        value = 2500;
+    }
+
+    valueInput.value = value;
+}
 
 // Função para atualizar o intervalo do slider
 function updateRange(motor) {
@@ -89,12 +101,14 @@ function saveConfiguration() {
         const motor = 'motor' + i;
 
         // Obtém os valores atuais, mínimos e máximos
+        const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
         const value = parseFloat(document.getElementById(motor + '-value').value);
         const min = parseFloat(document.getElementById(motor + '-min').value);
         const max = parseFloat(document.getElementById(motor + '-max').value);
 
         // Armazena os valores no objeto de configuração
         config[motor] = {
+            value_vel:value_vel,
             value: value,
             min: min,
             max: max
@@ -134,10 +148,11 @@ function loadSelectedConfiguration() {
             const config = allConfigs[configName];
 
             // Loop através dos motores e aplica os valores
-            for (let i = 1; i <= 6; i++) {
+            for (let i = 1; i <= 5; i++) {
                 const motor = 'motor' + i;
 
                 if (config[motor]) {
+                    const value_vel = config[motor].value_vel;
                     const value = config[motor].value;
                     const min = config[motor].min;
                     const max = config[motor].max;
@@ -148,6 +163,7 @@ function loadSelectedConfiguration() {
                     updateRange(motor);
 
                     // Atualiza o valor atual
+                    document.getElementById(motor + '-value_vel').value = value_vel;
                     document.getElementById(motor + '-value').value = value;
                     document.getElementById(motor + '-slider').value = value;
                     updateValue(motor);
