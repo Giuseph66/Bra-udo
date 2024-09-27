@@ -809,6 +809,23 @@ void handleTestMotor() {
     server.send(405, "text/plain", "Método não permitido");
   }
 }
+void handleGarraRequest() {
+  if (server.method() == HTTP_POST) {
+    String motorData = server.arg("plain");
+
+    // Imprimir os valores recebidos no terminal serial do ESP8266
+    Serial.println("Dados de teste recebidos do site:");
+    Serial.println(motorData);
+
+    // Envia os dados para o Mega via comunicação serial
+    megaSerial.println("TESTE_G:" + motorData);
+
+    // Retorna uma resposta de sucesso para o navegador
+    server.send(200, "text/plain", "Comando de teste enviado ao Mega!");
+  } else {
+    server.send(405, "text/plain", "Método não permitido");
+  }
+}
 
 // Função para servir o HTML
 void handleRoot() {
@@ -834,7 +851,8 @@ void setup() {
   // Inicia o servidor e define as rotas
   server.on("/", handleRoot);
   server.on("/setMotor", HTTP_POST, handleSetMotor);
-  server.on("/testMotor", HTTP_POST, handleTestMotor); // Nova rota para teste
+  server.on("/testMotor", HTTP_POST, handleTestMotor); 
+  server.on("/testGarra", HTTP_POST, handleGarraRequest);
 
   server.begin();
   Serial.println("Servidor iniciado.");
