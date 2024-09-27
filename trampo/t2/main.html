@@ -76,9 +76,9 @@
         <!-- Motor 3 -->
         <div class="container" id="motor3-container">
             <h2 id="motor3-title" onclick="testMotor('motor3')" onmouseover="changeText(this, 'Testar Motor?')"
-            onmouseout="changeText(this, 'Motor Redutor')">
-            Motor Redutor
-        </h2>
+                onmouseout="changeText(this, 'Motor Redutor')">
+                Motor Redutor
+            </h2>
             <div class="slider-values">
                 <label>Velocidade: <input type="number" id="motor3-value_vel" value="0" min="200" max="2500" step="1"
                         onclick="updateFromInput_vel('motor3')"></label>
@@ -161,6 +161,15 @@
             <input type="range" id="motor6-slider" min="-90" max="90" value="0" oninput="updateValue('motor6')">
         </div>
     </div>-->
+        <!-- Modal -->
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p id="modal-text"></p>
+                <button id="confirmButton">Confirmar</button>
+                <button id="cancelButton" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
 
         <footer>
             <p>&copy; 2024 Braçudo - FASTECH</p>

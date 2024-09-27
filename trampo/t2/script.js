@@ -210,36 +210,66 @@ function testMotor(motor) {
     const isConfirmed = confirm("Tem certeza que deseja testar o " +motor+" ?\n"
         +"Velocidade: "+value_vel +"\n"
         +"Sentido: "+sentido+"\n"
-        +"Qntd Rotação: "+value
+        +"Qntd Rotação: "+Math.abs(value)
     );
     if (isConfirmed) {
         alert("Foi"); // Chama a função de teste do motor se o usuário confirmar
     } else {
         alert("Teste cancelado.");
     }
-}
-function Subir_todos() {
+}function Subir_todos() {
+    let config = {}; // Inicializa o objeto config
+    
     for (let i = 1; i <= 5; i++) {
-    const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
-    const value = parseFloat(document.getElementById(motor + '-value').value);
-    let sentido="Direita"
-    if (value<0){
-        sentido="Esquerda"
-    }else if(value==0){
-        sentido="Nao meche"
+        const motor = 'motor' + i;
+        const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
+        const value = parseFloat(document.getElementById(motor + '-value').value);
+        
+        let sentido = "Direita";
+        if (value < 0) {
+            sentido = "Esquerda";
+        } else if (value == 0) {
+            sentido = "Nao meche";
+        }
+        
+        config[motor] = {
+            value_vel: value_vel,
+            value: Math.abs(value),
+            sentido: sentido
+        };
     }
-    const isConfirmed = confirm("Tem certeza que deseja testar o " +motor+" ?\n"
-        +"Velocidade: "+value_vel +"\n"
-        +"Sentido: "+sentido+"\n"
-        +"Qntd Rotação: "+value
-    );
+    
+    // Construir a string do conteúdo
+    let configString = "";
+    for (let motor in config) {
+        configString += motor + ":\n";
+        configString += "  Velocidade: " + config[motor].value_vel + "\n";
+        configString += "  Rotação: " + config[motor].value + "\n";
+        configString += "  Sentido: " + config[motor].sentido + "\n\n";
+    }
+    
+    // Exibir o modal com o conteúdo
+    document.getElementById('modal-text').innerText = configString;
+    openModal();
 }
-if (isConfirmed) {
-    alert("Foi"); // Chama a função de teste do motor se o usuário confirmar
-} else {
-    alert("Teste cancelado.");
+
+// Função para abrir o modal
+function openModal() {
+    document.getElementById('confirmModal').style.display = 'block';
 }
+
+// Função para fechar o modal
+function closeModal() {
+    document.getElementById('confirmModal').style.display = 'none';
 }
+
+// Função para confirmar a ação
+document.getElementById('confirmButton').onclick = function() {
+    alert("Foi");
+    closeModal(); // Fecha o modal após a confirmação
+};
+
+
 // Chama a função para atualizar o menu suspenso ao carregar a página
 window.onload = function() {
     updateConfigurationsDropdown();
