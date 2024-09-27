@@ -156,7 +156,7 @@ void loop() {
 
 void processJsonData(String jsonData) {
   // Variáveis temporárias para armazenar dados de cada motor
-  int cont=0
+  int cont=0;
   int motorNumber = 0;
   int value_vel = 0;
   int value = 0;
@@ -207,7 +207,7 @@ void processJsonData(String jsonData) {
         motorList[cont].value = value;
         motorList[cont].sentido = lado;
         motorList[cont].motor = motorNumber;
-        cont=cont+1
+        cont=cont+1;
         // Reset para o próximo motor
         insideMotor = false;
       }
