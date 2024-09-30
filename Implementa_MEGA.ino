@@ -1,99 +1,80 @@
+unsigned long lastMicros = 0; // Variável global para armazenar o tempo anterior
 
-struct MotorData {
-  int value_vel;   // Velocidade
-  int value;       // Rotação
-  String sentido;  // Sentido (Direita ou Esquerda)
-};
+void mexe_todos(int pin_sentido_j_1, int pin_sentido_j_2, int pin_sentido_1, int pin_sentido_2, int pin_sentido_3, int pin_sentido_4,
+                int pin_controle_j_1, int pin_controle_j_2, int pin_controle_1, int pin_controle_2, int pin_controle_3, int pin_controle_4,
+                String pin_sentido_lado_j_1_2, String pin_sentido_lado_1, String pin_sentido_lado_2, String pin_sentido_lado_3, String pin_sentido_lado_4,
+                int vel_rotacao_j_1_2, int vel_rotacao_1, int vel_rotacao_2, int vel_rotacao_3, int vel_rotacao_4,
+                int qnt_rotacao_j_1_2, int qnt_rotacao_1, int qnt_rotacao_2, int qnt_rotacao_3, int qnt_rotacao_4, 
+                bool garra_cmc, bool garra_fnl) {
 
-// Lista de structs para armazenar os dados de até 5 motores
-MotorData motorList[5];
+    // Mover a garra para a posição inicial
+    Serial.print("Garra - Estado inicial: ");
+    Serial.println(garra_cmc ? "Aberta" : "Fechada");
+    mover_garra(garra_cmc);
 
-void setup() {
-  Serial.begin(115200);  // Inicializa a comunicação serial
-  Serial.println("Esperando dados JSON...");
-}
-
-void loop() {
-  if (Serial.available()) {
-    // Lê os dados da serial como uma string
-    String jsonData = Serial.readStringUntil('\n');
-
-    // Processa os dados lidos (filtra o JSON manualmente)
-    processJsonData(jsonData);
-
-    // Exibe os dados salvos na lista
-    printMotorList();
-  }
-}
-
-void processJsonData(String jsonData) {
-  // Variáveis temporárias para armazenar dados de cada motor
-  int motorNumber = 0;
-  int value_vel = 0;
-  int value = 0;
-  String sentido = "";
-
-  // Verifica se estamos lendo um motor específico
-  bool insideMotor = false;
-
-  // Percorre a string de dados JSON manualmente
-  for (int i = 0; i < jsonData.length(); i++) {
-    // Detecta o início de um objeto de motor
-    if (jsonData.substring(i, i + 6) == "\"motor") {
-      motorNumber = jsonData.charAt(i + 6) - '0'; // Extrai o número do motor
-      insideMotor = true;
-      i += 7; // Avança o índice
+    // Definir o sentido dos motores (somente se não for "3")
+    if (pin_sentido_lado_j_1_2 != "3") {
+        bool entrada = (pin_sentido_lado_j_1_2 == "1") ? true : false;
+        digitalWrite(pin_sentido_j_1, entrada);
+        digitalWrite(pin_sentido_j_2, !entrada); // O segundo motor em sentido inverso
     }
 
-    if (insideMotor) {
-      // Extrai o valor de "value_vel"
-      if (jsonData.substring(i, i + 10) == "\"value_vel") {
-        int start = jsonData.indexOf(":", i) + 1;
-        int end = jsonData.indexOf(",", start);
-        value_vel = jsonData.substring(start, end).toInt();
-        i = end; // Avança o índice
-      }
+    // Definir o sentido dos outros motores
+    if (pin_sentido_lado_1 != "3") digitalWrite(pin_sentido_1, (pin_sentido_lado_1 == "1") ? HIGH : LOW);
+    if (pin_sentido_lado_2 != "3") digitalWrite(pin_sentido_2, (pin_sentido_lado_2 == "1") ? HIGH : LOW);
+    if (pin_sentido_lado_3 != "3") digitalWrite(pin_sentido_3, (pin_sentido_lado_3 == "1") ? HIGH : LOW);
+    if (pin_sentido_lado_4 != "3") digitalWrite(pin_sentido_4, (pin_sentido_lado_4 == "1") ? HIGH : LOW);
 
-      // Extrai o valor de "value"
-      if (jsonData.substring(i, i + 7) == "\"value\"") {
-        int start = jsonData.indexOf(":", i) + 1;
-        int end = jsonData.indexOf(",", start);
-        value = jsonData.substring(start, end).toInt();
-        i = end; // Avança o índice
-      }
+    int maior_qnt_rotacao = max(qnt_rotacao_j_1_2, max(qnt_rotacao_1, max(qnt_rotacao_2, max(qnt_rotacao_3, qnt_rotacao_4))));
 
-      // Extrai o valor de "sentido"
-      if (jsonData.substring(i, i + 9) == "\"sentido\"") {
-        int start = jsonData.indexOf(":", i) + 2;
-        int end = jsonData.indexOf("\"", start);
-        sentido = jsonData.substring(start, end);
-        i = end; // Avança o índice
+    for (int i = 0; i < maior_qnt_rotacao; i++) {
+        unsigned long currentMicros = micros();
 
-        // Armazena os dados do motor na lista de structs
-        motorList[motorNumber - 1].value_vel = value_vel;
-        motorList[motorNumber - 1].value = value;
-        motorList[motorNumber - 1].sentido = sentido;
+        // Mover motor J1/J2
+        if (pin_sentido_lado_j_1_2 != "3" && qnt_rotacao_j_1_2 > i && currentMicros - lastMicros >= vel_rotacao_j_1_2) {
+            digitalWrite(pin_controle_j_1, HIGH);
+            digitalWrite(pin_controle_j_2, HIGH);
+            delayMicroseconds(vel_rotacao_j_1_2);
+            digitalWrite(pin_controle_j_1, LOW);
+            digitalWrite(pin_controle_j_2, LOW);
+            lastMicros = currentMicros;
+        }
 
-        // Reset para o próximo motor
-        insideMotor = false;
-      }
+        // Mover motor 1
+        if (pin_sentido_lado_1 != "3" && qnt_rotacao_1 > i && currentMicros - lastMicros >= vel_rotacao_1) {
+            digitalWrite(pin_controle_1, HIGH);
+            delayMicroseconds(vel_rotacao_1);
+            digitalWrite(pin_controle_1, LOW);
+            lastMicros = currentMicros;
+        }
+
+        // Mover motor 2
+        if (pin_sentido_lado_2 != "3" && qnt_rotacao_2 > i && currentMicros - lastMicros >= vel_rotacao_2) {
+            digitalWrite(pin_controle_2, HIGH);
+            delayMicroseconds(vel_rotacao_2);
+            digitalWrite(pin_controle_2, LOW);
+            lastMicros = currentMicros;
+        }
+
+        // Mover motor 3
+        if (pin_sentido_lado_3 != "3" && qnt_rotacao_3 > i && currentMicros - lastMicros >= vel_rotacao_3) {
+            digitalWrite(pin_controle_3, HIGH);
+            delayMicroseconds(vel_rotacao_3);
+            digitalWrite(pin_controle_3, LOW);
+            lastMicros = currentMicros;
+        }
+
+        // Mover motor 4
+        if (pin_sentido_lado_4 != "3" && qnt_rotacao_4 > i && currentMicros - lastMicros >= vel_rotacao_4) {
+            digitalWrite(pin_controle_4, HIGH);
+            delayMicroseconds(vel_rotacao_4);
+            digitalWrite(pin_controle_4, LOW);
+            lastMicros = currentMicros;
+        }
     }
-  }
-  Serial.println("Processamento concluído.\n");
-}
 
-// Função para exibir os dados da lista de motores
-void printMotorList() {
-  Serial.println("Lista de Motores:");
-  for (int i = 0; i < 5; i++) {
-    Serial.print("Motor ");
-    Serial.print(i + 1);
-    Serial.print(" - Velocidade: ");
-    Serial.print(motorList[i].value_vel);
-    Serial.print(", Rotacao: ");
-    Serial.print(motorList[i].value);
-    Serial.print(", Sentido: ");
-    Serial.println(motorList[i].sentido);
-  }
-  Serial.println();
+    // Mover a garra para a posição final
+    Serial.print("Garra - Estado final: ");
+    Serial.println(garra_fnl ? "Aberta" : "Fechada");
+    mover_garra(garra_fnl);
 }

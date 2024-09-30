@@ -1,101 +1,89 @@
-// Definindo uma estrutura para armazenar os pinos de cada motor
-struct MotorPins {
-  int pin_senti;   // Pino para controle de sentido
-  int pin_senti_2; // Segundo pino de controle de sentido (apenas para Motor 2)
-  int pin_control; // Pino para controle de velocidade (PWM)
-  int pin_control_2; // Segundo pino de controle de velocidade (apenas para Motor 2)
-  int enPin;       // Pino para enable do motor
-};
+unsigned long lastMicrosJ12 = 0;
+unsigned long lastMicros1 = 0;
+unsigned long lastMicros2 = 0;
+unsigned long lastMicros3 = 0;
+unsigned long lastMicros4 = 0;
 
-// Criando um array de structs para armazenar os pinos dos motores
-MotorPins motorPins[] = {
-  {46, -1, 44, -1, 42},   // Motor 1 (Motor X_Y)
-  {52, 53, 50, 51, 48},   // Motor 2 (Motor Duplo)
-  {47, -1, 45, -1, 43},   // Motor 3 (Motor Redutor)
-  {40, -1, 38, -1, 36},   // Motor 4 (Motor Garra)
-  {41, -1, 39, -1, 37}    // Motor 5 (Motor 360)
-};
+void mexe_todos(int pin_sentido_j_1, int pin_sentido_j_2, int pin_sentido_1, int pin_sentido_2, int pin_sentido_3, int pin_sentido_4,
+                int pin_controle_j_1, int pin_controle_j_2, int pin_controle_1, int pin_controle_2, int pin_controle_3, int pin_controle_4,
+                String pin_sentido_lado_j_1_2, String pin_sentido_lado_1, String pin_sentido_lado_2, String pin_sentido_lado_3, String pin_sentido_lado_4,
+                int vel_rotacao_j_1_2, int vel_rotacao_1, int vel_rotacao_2, int vel_rotacao_3, int vel_rotacao_4,
+                int qnt_rotacao_j_1_2, int qnt_rotacao_1, int qnt_rotacao_2, int qnt_rotacao_3, int qnt_rotacao_4, 
+                bool garra_cmc, bool garra_fnl) {
 
-void setup() {
-  // Inicializa a comunicação serial para depuração
-  Serial.begin(115200);
+    // Mover a garra para a posição inicial
+    Serial.print("Garra - Estado inicial: ");
+    Serial.println(garra_cmc ? "Aberta" : "Fechada");
+    mover_garra(garra_cmc);
 
-  // Configurar todos os pinos como saídas
-  for (int i = 0; i < 5; i++) {
-    pinMode(motorPins[i].pin_senti, OUTPUT);
-    if (motorPins[i].pin_senti_2 != -1) pinMode(motorPins[i].pin_senti_2, OUTPUT);  // Para motores com segundo pino de sentido
-    pinMode(motorPins[i].pin_control, OUTPUT);
-    if (motorPins[i].pin_control_2 != -1) pinMode(motorPins[i].pin_control_2, OUTPUT);  // Para motores com segundo pino de controle
-    pinMode(motorPins[i].enPin, OUTPUT);
-  }
+    // Definir o sentido dos motores
+    if (pin_sentido_lado_j_1_2 != "3") {
+        digitalWrite(pin_sentido_j_1, (pin_sentido_lado_j_1_2 == "1") ? HIGH : LOW);
+        digitalWrite(pin_sentido_j_2, (pin_sentido_lado_j_1_2 == "1") ? LOW : HIGH); // Motor J2 em sentido inverso
+    }
+    if (pin_sentido_lado_1 != "3") digitalWrite(pin_sentido_1, (pin_sentido_lado_1 == "1") ? HIGH : LOW);
+    if (pin_sentido_lado_2 != "3") digitalWrite(pin_sentido_2, (pin_sentido_lado_2 == "1") ? HIGH : LOW);
+    if (pin_sentido_lado_3 != "3") digitalWrite(pin_sentido_3, (pin_sentido_lado_3 == "1") ? HIGH : LOW);
+    if (pin_sentido_lado_4 != "3") digitalWrite(pin_sentido_4, (pin_sentido_lado_4 == "1") ? HIGH : LOW);
 
-  Serial.println("Pinos configurados e prontos.");
+    int maior_qnt_rotacao = max(qnt_rotacao_j_1_2, max(qnt_rotacao_1, max(qnt_rotacao_2, max(qnt_rotacao_3, qnt_rotacao_4))));
+
+    for (int i = 0; i < maior_qnt_rotacao; i++) {
+        unsigned long currentMicros = micros();
+
+        // Motor J1/J2
+        if (pin_sentido_lado_j_1_2 != "3" && qnt_rotacao_j_1_2 > i && (currentMicros - lastMicrosJ12) >= vel_rotacao_j_1_2) {
+            digitalWrite(pin_controle_j_1, HIGH);
+            digitalWrite(pin_controle_j_2, HIGH);
+            lastMicrosJ12 = currentMicros; // Atualiza o tempo para a próxima iteração
+        } else {
+            digitalWrite(pin_controle_j_1, LOW);
+            digitalWrite(pin_controle_j_2, LOW);
+        }
+
+        // Motor 1
+        if (pin_sentido_lado_1 != "3" && qnt_rotacao_1 > i && (currentMicros - lastMicros1) >= vel_rotacao_1) {
+            digitalWrite(pin_controle_1, HIGH);
+            lastMicros1 = currentMicros;
+        } else {
+            digitalWrite(pin_controle_1, LOW);
+        }
+
+        // Motor 2
+        if (pin_sentido_lado_2 != "3" && qnt_rotacao_2 > i && (currentMicros - lastMicros2) >= vel_rotacao_2) {
+            digitalWrite(pin_controle_2, HIGH);
+            lastMicros2 = currentMicros;
+        } else {
+            digitalWrite(pin_controle_2, LOW);
+        }
+
+        // Motor 3
+        if (pin_sentido_lado_3 != "3" && qnt_rotacao_3 > i && (currentMicros - lastMicros3) >= vel_rotacao_3) {
+            digitalWrite(pin_controle_3, HIGH);
+            lastMicros3 = currentMicros;
+        } else {
+            digitalWrite(pin_controle_3, LOW);
+        }
+
+        // Motor 4
+        if (pin_sentido_lado_4 != "3" && qnt_rotacao_4 > i && (currentMicros - lastMicros4) >= vel_rotacao_4) {
+            digitalWrite(pin_controle_4, HIGH);
+            lastMicros4 = currentMicros;
+        } else {
+            digitalWrite(pin_controle_4, LOW);
+        }
+    }
+
+    // Mover a garra para a posição final
+    Serial.print("Garra - Estado final: ");
+    Serial.println(garra_fnl ? "Aberta" : "Fechada");
+    mover_garra(garra_fnl);
 }
 
-void loop() {
-  // Simulando a recepção de um comando para mover o motor 2
-  int motorComando = 2; // Exemplo: Recebemos o comando para mover o Motor 2
-
-  if (motorComando == 2) {
-    // Usar a função especial para o Motor 2 (Motor Duplo)
-    gira_2_motor_base(motorPins[1].pin_senti, motorPins[1].pin_senti_2, true, motorPins[1].pin_control, motorPins[1].pin_control_2, 500, 10);  // Exemplo de movimento
-  } else {
-    // Controlar os outros motores normalmente
-    moverMotor(motorComando, HIGH, 200);  // Exemplo de movimento
-    delay(2000); // Espera de 2 segundos
-    moverMotor(motorComando, LOW, 0);    // Para o motor
-    delay(1000); // Espera de 1 segundo
-  }
-}
-
-// Função para mover o motor 1, 3, 4 ou 5 (controle simples)
-void moverMotor(int motor, int sentido, int velocidade) {
-  // Verifica se o número do motor está no intervalo permitido
-  if (motor >= 1 && motor <= 5 && motor != 2) {
-    int index = motor - 1; // Ajusta o índice do array (1 -> 0, 2 -> 1, ...)
-
-    // Controla o sentido do motor
-    digitalWrite(motorPins[index].pin_senti, sentido);
-
-    // Define a velocidade do motor (usando PWM no pino de controle)
-    analogWrite(motorPins[index].pin_control, velocidade);
-
-    // Ativa o motor
-    digitalWrite(motorPins[index].enPin, HIGH);
-
-    // Exibe informações no serial para depuração
-    Serial.print("Movendo Motor ");
-    Serial.print(motor);
-    Serial.print(" - Sentido: ");
-    Serial.print(sentido == HIGH ? "Frente" : "Reverso");
-    Serial.print(" - Velocidade: ");
-    Serial.println(velocidade);
-  } else {
-    Serial.println("Erro: Número do motor inválido!");
-  }
-}
-
-// Função para mover o Motor 2 (Motor Duplo)
-void gira_2_motor_base(int pin_sentido, int pin_sentido_2, bool pin_sentido_lado, int pin_controle, int pin_controle_2, int vel_rotacao, int qnt_rotacao) {
-  // Controla o sentido
-  digitalWrite(pin_sentido, pin_sentido_lado);
-  if (pin_sentido_lado == 1) {
-    pin_sentido_lado = 0;
-  } else {
-    pin_sentido_lado = 1;
-  }
-  digitalWrite(pin_sentido_2, pin_sentido_lado);
-
-  // Controla as rotações
-  for (int i = 0; i < qnt_rotacao; i++) {
-    digitalWrite(pin_controle, HIGH);
-    digitalWrite(pin_controle_2, HIGH);
-    delayMicroseconds(vel_rotacao);
-    digitalWrite(pin_controle, LOW);
-    digitalWrite(pin_controle_2, LOW);
-    delayMicroseconds(vel_rotacao);
-  }
-
-  // Exibe informações no serial para depuração
-  Serial.println("Movendo Motor 2 (Motor Duplo) com função especial.");
+void mover_garra(bool depende){
+  if(depende){
+    servoMotor.write(120); 
+  }else{
+    servoMotor.write(0); 
+  }             
 }
