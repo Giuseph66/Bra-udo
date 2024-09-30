@@ -3,8 +3,8 @@
 #include <SoftwareSerial.h>
 
 // Defina as credenciais do Wi-Fi
-const char* ssid = "Pedro";
-const char* password = "66996984391";
+const char* ssid = "Esp";
+const char* password = "12345678";
 
 // Comunicação Serial com o Arduino Mega
 SoftwareSerial megaSerial(5, 4); // Pinos D6 (RX) e D5 (TX) do ESP8266
@@ -51,12 +51,22 @@ const char* htmlPage = R"rawliteral(
         /* Rodapé */
         footer {
             background-color: #007bff;
-            color: #fff;
+            color: white;
             text-align: center;
             padding: 10px 0;
+            font-size: 0.8em;
             position: fixed;
             width: 100%;
             bottom: 0;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        footer p {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
         }
 
         /* Contêiner Principal */
@@ -65,18 +75,26 @@ const char* htmlPage = R"rawliteral(
             flex-wrap: wrap;
             justify-content: center;
             padding: 20px;
-            margin-bottom: 60px; /* Espaço para o rodapé */
+            margin-bottom: 60px;
+            /* Espaço para o rodapé */
+        }
+
+        .sober_conteiner {
+            display: flex;
+            flex-wrap: wrap;
         }
 
         /* Estilo dos Motores */
         .container {
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 280px;
-            margin: 15px;
+            width: 300px;
+            height: auto;
+            margin: 15px auto;
             text-align: center;
+            transition: transform 0.2s ease;
         }
 
         .container h2 {
@@ -92,16 +110,18 @@ const char* htmlPage = R"rawliteral(
         .slider-values {
             flex-direction: column;
         }
-        .slider-values input{
+
+        .slider-values input {
             font-size: 20px;
         }
+
         .slider-values,
         .slider-controls {
             font-size: 20px;
             margin: 10px 0;
             display: flex;
             align-items: center;
-            justify-content:center;
+            justify-content: center;
         }
 
         .slider-values label,
@@ -136,7 +156,7 @@ const char* htmlPage = R"rawliteral(
             border-radius: 50%;
             background: #007bff;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         input[type="range"]::-moz-range-thumb {
@@ -145,7 +165,7 @@ const char* htmlPage = R"rawliteral(
             border-radius: 50%;
             background: #007bff;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /* Visualização do Ângulo */
@@ -224,29 +244,29 @@ const char* htmlPage = R"rawliteral(
         }
 
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1; 
+            display: none;
+            position: fixed;
+            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; 
-            background-color: rgba(0, 0, 0, 0.4); 
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto; 
+            margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; 
-            max-width: 500px; 
+            width: 80%;
+            max-width: 500px;
             border-radius: 1em;
             text-align: center;
         }
 
-        .modal button{
+        .modal button {
             background-color: #007bff;
             border: none;
             color: white;
@@ -271,6 +291,40 @@ const char* htmlPage = R"rawliteral(
             color: black;
             text-decoration: none;
             cursor: pointer;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1.1em;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: background-color 0.2s ease;
+        }
+
+        select:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Título da Garra */
+        #garra-title {
+            margin-top: 0;
+            font-size: 1.8em;
+            color: #007bff;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        #garra-title:hover {
+            color: #0056b3;
+        }
+
+        /* Animação para o contêiner da garra */
+        #garra-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         /* Responsividade */
@@ -298,29 +352,33 @@ const char* htmlPage = R"rawliteral(
                 <!-- As opções serão preenchidas dinamicamente -->
             </select>
             <button onclick="Subir_todos()">Carregar Configuração P/Arduino</button>
+            <button onclick="inverterSinais()">Inverter Todos os Sinais</button>
         </div>
+    </div>
 
+    <div class="sober_conteiner">
         <div class="container" id="motor1-container">
             <h2 id="motor1-title" onclick="testMotor('motor1')" onmouseover="changeText(this, 'Testar Motor?')"
                 onmouseout="changeText(this, 'Motor X_Y')">
                 Motor X_Y
             </h2>
             <div class="slider-values">
-                <label>Velocidade: <input type="number" id="motor1-value_vel" value="0" min="200" max="2500" step="1"
+                <label>Velocidade: <input type="number" id="motor1-value_vel" value="2000" min="200" max="4000" step="1"
                         onclick="updateFromInput_vel('motor1')"></label>
-                <label>Angulo Atual: <input type="number" id="motor1-value" value="0" min="-90" max="90" step="1"
+                <label>Angulo Atual: <input type="number" id="motor1-value" value="0" min="-420" max="420" step="1"
                         oninput="updateFromInput('motor1')"></label>
             </div>
             <div class="slider-controls">
-                <label>Mínimo: <input type="number" id="motor1-min" value="-90" oninput="updateRange('motor1')"></label>
-                <label>Máximo: <input type="number" id="motor1-max" value="90" oninput="updateRange('motor1')"></label>
+                <label>Mínimo: <input type="number" id="motor1-min" value="-420" oninput="updateRange('motor1')"></label>
+                <label>Máximo: <input type="number" id="motor1-max" value="420" oninput="updateRange('motor1')"></label>
             </div>
             <div class="angle-visual-container">
                 <div class="angle-visual" id="motor1-line"></div>
             </div>
             <label class="slider-label">Controle (graus):</label>
-            <input type="range" id="motor1-slider" min="-90" max="90" value="0" oninput="updateValue('motor1')">
+            <input type="range" id="motor1-slider" min="-420" max="420" value="0" oninput="updateValue('motor1')">
         </div>
+        <!-- Contêiner da Garra -->
 
         <!-- Motor 2 -->
         <div class="container" id="motor2-container">
@@ -329,20 +387,20 @@ const char* htmlPage = R"rawliteral(
                 Motor Duplo
             </h2>
             <div class="slider-values">
-                <label>Velocidade: <input type="number" id="motor2-value_vel" value="0" min="200" max="2500" step="1"
+                <label>Velocidade: <input type="number" id="motor2-value_vel" value="2000" min="200" max="4000" step="1"
                         onclick="updateFromInput_vel('motor2')"></label>
-                <label>Angulo Atual: <input type="number" id="motor2-value" value="0" min="-90" max="90" step="1"
+                <label>Angulo Atual: <input type="number" id="motor2-value" value="0" min="-600" max="600" step="1"
                         oninput="updateFromInput('motor2')"></label>
             </div>
             <div class="slider-controls">
-                <label>Mínimo: <input type="number" id="motor2-min" value="-90" oninput="updateRange('motor2')"></label>
-                <label>Máximo: <input type="number" id="motor2-max" value="90" oninput="updateRange('motor2')"></label>
+                <label>Mínimo: <input type="number" id="motor2-min" value="-600" oninput="updateRange('motor2')"></label>
+                <label>Máximo: <input type="number" id="motor2-max" value="600" oninput="updateRange('motor2')"></label>
             </div>
             <div class="angle-visual-container">
                 <div class="angle-visual" id="motor2-line"></div>
             </div>
             <label class="slider-label">Controle (graus):</label>
-            <input type="range" id="motor2-slider" min="-90" max="90" value="0" oninput="updateValue('motor2')">
+            <input type="range" id="motor2-slider" min="-600" max="600" value="0" oninput="updateValue('motor2')">
         </div>
 
         <!-- Motor 3 -->
@@ -352,20 +410,20 @@ const char* htmlPage = R"rawliteral(
                 Motor Redutor
             </h2>
             <div class="slider-values">
-                <label>Velocidade: <input type="number" id="motor3-value_vel" value="0" min="200" max="2500" step="1"
+                <label>Velocidade: <input type="number" id="motor3-value_vel" value="200" min="200" max="4000" step="1"
                         onclick="updateFromInput_vel('motor3')"></label>
-                <label>Angulo Atual: <input type="number" id="motor3-value" value="0" min="-90" max="90" step="1"
+                <label>Angulo Atual: <input type="number" id="motor3-value" value="0" min="-15000" max="15000" step="1"
                         oninput="updateFromInput('motor3')"></label>
             </div>
             <div class="slider-controls">
-                <label>Mínimo: <input type="number" id="motor3-min" value="-90" oninput="updateRange('motor3')"></label>
-                <label>Máximo: <input type="number" id="motor3-max" value="90" oninput="updateRange('motor3')"></label>
+                <label>Mínimo: <input type="number" id="motor3-min" value="-15000" oninput="updateRange('motor3')"></label>
+                <label>Máximo: <input type="number" id="motor3-max" value="15000" oninput="updateRange('motor3')"></label>
             </div>
             <div class="angle-visual-container">
                 <div class="angle-visual" id="motor3-line"></div>
             </div>
             <label class="slider-label">Controle (graus):</label>
-            <input type="range" id="motor3-slider" min="-90" max="90" value="0" oninput="updateValue('motor3')">
+            <input type="range" id="motor3-slider" min="-15000" max="15000" value="0" oninput="updateValue('motor3')">
         </div>
 
         <div class="container" id="motor4-container">
@@ -374,20 +432,20 @@ const char* htmlPage = R"rawliteral(
                 Motor Garra
             </h2>
             <div class="slider-values">
-                <label>Velocidade: <input type="number" id="motor4-value_vel" value="0" min="200" max="2500" step="1"
+                <label>Velocidade: <input type="number" id="motor4-value_vel" value="1000" min="200" max="4000" step="1"
                         onclick="updateFromInput_vel('motor4')"></label>
-                <label>Angulo Atual: <input type="number" id="motor4-value" value="0" min="-90" max="90" step="1"
+                <label>Angulo Atual: <input type="number" id="motor4-value" value="0" min="-450" max="450" step="1"
                         oninput="updateFromInput('motor4')"></label>
             </div>
             <div class="slider-controls">
-                <label>Mínimo: <input type="number" id="motor4-min" value="-90" oninput="updateRange('motor4')"></label>
-                <label>Máximo: <input type="number" id="motor4-max" value="90" oninput="updateRange('motor4')"></label>
+                <label>Mínimo: <input type="number" id="motor4-min" value="-450" oninput="updateRange('motor4')"></label>
+                <label>Máximo: <input type="number" id="motor4-max" value="450" oninput="updateRange('motor4')"></label>
             </div>
             <div class="angle-visual-container">
                 <div class="angle-visual" id="motor4-line"></div>
             </div>
             <label class="slider-label">Controle (graus):</label>
-            <input type="range" id="motor4-slider" min="-90" max="90" value="0" oninput="updateValue('motor4')">
+            <input type="range" id="motor4-slider" min="-450" max="450" value="0" oninput="updateValue('motor4')">
         </div>
         <!-- Motor 4 -->
         <div class="container" id="motor5-container">
@@ -396,23 +454,40 @@ const char* htmlPage = R"rawliteral(
                 Motor 360
             </h2>
             <div class="slider-values">
-                <label>Velocidade: <input type="number" id="motor5-value_vel" value="0" min="200" max="2500" step="1"
+                <label>Velocidade: <input type="number" id="motor5-value_vel" value="3500" min="200" max="4000" step="1"
                         onclick="updateFromInput_vel('motor5')"></label>
-                <label>Angulo Atual: <input type="number" id="motor5-value" value="0" min="-180" max="180" step="1"
+                <label>Angulo Atual: <input type="number" id="motor5-value" value="0" min="-210" max="210" step="1"
                         oninput="updateFromInput('motor5')"></label>
             </div>
             <div class="slider-controls">
-                <label>Mínimo: <input type="number" id="motor5-min" value="-180"
+                <label>Mínimo: <input type="number" id="motor5-min" value="-210"
                         oninput="updateRange('motor5')"></label>
-                <label>Máximo: <input type="number" id="motor5-max" value="180" oninput="updateRange('motor5')"></label>
+                <label>Máximo: <input type="number" id="motor5-max" value="210" oninput="updateRange('motor5')"></label>
             </div>
             <div class="angle-visual-container">
                 <div class="angle-visual" id="motor5-line"></div>
             </div>
             <label class="slider-label">Controle (graus):</label>
-            <input type="range" id="motor5-slider" min="-180" max="180" value="0" oninput="updateValue('motor5')">
+            <input type="range" id="motor5-slider" min="-210" max="210" value="0" oninput="updateValue('motor5')">
         </div>
 
+
+        <div class="container" id="garra-container">
+            <h2 id="garra-title" onclick="testGarra()" onmouseover="changeText(this, 'Testar garra?')"
+                onmouseout="changeText(this, 'Garra')">Garra</h2>
+            <div class="slider-values">
+                <label>Inicia:</label>
+                <select id="garra-inicio-select" onchange="setGarraInicio()">
+                    <option value="Aberta">Aberta</option>
+                    <option value="Fechada">Fechada</option>
+                </select>
+                <label>Finaliza: </label>
+                <select id="garra-final-select" onchange="setGarraFinal()">
+                    <option value="Fechada">Fechada</option>
+                    <option value="Aberta">Aberta</option>
+                </select>
+            </div>
+        </div>
 
         <!-- Modal -->
         <div id="confirmModal" class="modal">
@@ -424,245 +499,289 @@ const char* htmlPage = R"rawliteral(
             </div>
         </div>
 
-        <footer>
-            <p>&copy; 2024 Braçudo - FASTECH</p>
-        </footer>
+    </div>
+    <footer>
+        <p>&copy; 2024 Braçudo - FASTECH</p>
+    </footer>
 
-        <script>
-            // Função para atualizar o valor e a rotação a partir do slider
-            function updateValue(motor) {
-                const slider = document.getElementById(motor + '-slider');
-                const value = parseFloat(slider.value);
-                const valueInput = document.getElementById(motor + '-value');
-                valueInput.value = value;
+    <script>
+        // Função para atualizar o valor e a rotação a partir do slider
+        function updateValue(motor) {
+            const slider = document.getElementById(motor + '-slider');
+            const value = parseFloat(slider.value);
+            const valueInput = document.getElementById(motor + '-value');
+            valueInput.value = value;
 
-                const min = parseFloat(slider.min);
-                const max = parseFloat(slider.max);
+            const min = parseFloat(slider.min);
+            const max = parseFloat(slider.max);
 
-                let rotation = 0;
-                if (max !== min) {
-                    rotation = ((value - min) / (max - min)) * 180 - 90;
-                }
-
-                const line = document.getElementById(motor + '-line');
-                line.style.transform = `rotate(${rotation}deg)`;
+            let rotation = 0;
+            if (max !== min) {
+                rotation = ((value - min) / (max - min)) * 180 - 90;
             }
 
-            // Função para atualizar o slider e a rotação a partir do input
-            function updateFromInput(motor) {
-                const valueInput = document.getElementById(motor + '-value');
-                let value = parseFloat(valueInput.value);
-                const slider = document.getElementById(motor + '-slider');
+            const line = document.getElementById(motor + '-line');
+            line.style.transform = `rotate(${rotation}deg)`;
+        }
 
-                const min = parseFloat(slider.min);
-                const max = parseFloat(slider.max);
+        // Função para atualizar o slider e a rotação a partir do input
+        function updateFromInput(motor) {
+            const valueInput = document.getElementById(motor + '-value');
+            let value = parseFloat(valueInput.value);
+            const slider = document.getElementById(motor + '-slider');
 
-                if (value < min) {
-                    value = min;
-                } else if (value > max) {
-                    value = max;
-                }
+            const min = parseFloat(slider.min);
+            const max = parseFloat(slider.max);
 
-                valueInput.value = value;
-                slider.value = value;
-
-                let rotation = 0;
-                if (max !== min) {
-                    rotation = ((value - min) / (max - min)) * 180 - 90;
-                }
-
-                const line = document.getElementById(motor + '-line');
-                line.style.transform = `rotate(${rotation}deg)`;
+            if (value < min) {
+                value = min;
+            } else if (value > max) {
+                value = max;
             }
 
-            function updateFromInput_vel(motor) {
-                const valueInput = document.getElementById(motor + '-value_vel');
-                let value = parseFloat(valueInput.value);
+            valueInput.value = value;
+            slider.value = value;
 
-                if (value < 200) {
-                    value = 200;
-                } else if (value > 2500) {
-                    value = 2500;
-                }
-
-                valueInput.value = value;
+            let rotation = 0;
+            if (max !== min) {
+                rotation = ((value - min) / (max - min)) * 180 - 90;
             }
 
-            // Função para atualizar o intervalo do slider
-            function updateRange(motor) {
-                const minInput = document.getElementById(motor + '-min');
-                const maxInput = document.getElementById(motor + '-max');
-                const slider = document.getElementById(motor + '-slider');
-                const valueInput = document.getElementById(motor + '-value');
+            const line = document.getElementById(motor + '-line');
+            line.style.transform = `rotate(${rotation}deg)`;
+        }
 
-                slider.min = minInput.value;
-                slider.max = maxInput.value;
+        function updateFromInput_vel(motor) {
+            const valueInput = document.getElementById(motor + '-value_vel');
+            let value = parseFloat(valueInput.value);
 
-                valueInput.min = minInput.value;
-                valueInput.max = maxInput.value;
-
-                let value = parseFloat(valueInput.value);
-                const min = parseFloat(slider.min);
-                const max = parseFloat(slider.max);
-
-                if (value < min) {
-                    value = min;
-                } else if (value > max) {
-                    value = max;
-                }
-
-                valueInput.value = value;
-                slider.value = value;
-
-                updateValue(motor);
+            if (value < 200) {
+                value = 200;
+            } else if (value > 2500) {
+                value = 2500;
             }
 
-            // Função para salvar a configuração atual
-            function saveConfiguration() {
-                const configName = prompt('Digite um nome para a configuração:');
-                if (!configName) {
-                    alert('Nome inválido. Configuração não salva.');
-                    return;
-                }
+            valueInput.value = value;
+        }
 
-                // Cria um objeto para armazenar as configurações
-                const config = {};
+        // Função para atualizar o intervalo do slider
+        function updateRange(motor) {
+            const minInput = document.getElementById(motor + '-min');
+            const maxInput = document.getElementById(motor + '-max');
+            const slider = document.getElementById(motor + '-slider');
+            const valueInput = document.getElementById(motor + '-value');
 
-                // Loop através dos 5 motores
-                for (let i = 1; i <= 5; i++) {
-                    const motor = 'motor' + i;
+            slider.min = minInput.value;
+            slider.max = maxInput.value;
 
-                    // Obtém os valores atuais, mínimos e máximos
-                    const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
-                    const value = parseFloat(document.getElementById(motor + '-value').value);
-                    const min = parseFloat(document.getElementById(motor + '-min').value);
-                    const max = parseFloat(document.getElementById(motor + '-max').value);
+            valueInput.min = minInput.value;
+            valueInput.max = maxInput.value;
 
-                    // Armazena os valores no objeto de configuração
-                    config[motor] = {
-                        value_vel: value_vel,
-                        value: value,
-                        min: min,
-                        max: max
-                    };
-                }
+            let value = parseFloat(valueInput.value);
+            const min = parseFloat(slider.min);
+            const max = parseFloat(slider.max);
 
-                // Recupera todas as configurações existentes ou inicia um novo objeto
-                const allConfigs = JSON.parse(localStorage.getItem('allMotorConfigurations')) || {};
-
-                // Adiciona a nova configuração
-                allConfigs[configName] = config;
-
-                // Salva todas as configurações atualizadas
-                localStorage.setItem('allMotorConfigurations', JSON.stringify(allConfigs));
-
-                // Atualiza o menu suspenso
-                updateConfigurationsDropdown();
-
-                alert('Configuração "' + configName + '" salva com sucesso!');
+            if (value < min) {
+                value = min;
+            } else if (value > max) {
+                value = max;
             }
 
-            // Função para carregar a configuração selecionada
-            function loadSelectedConfiguration() {
-                const dropdown = document.getElementById('configurations-dropdown');
-                const configName = dropdown.value;
+            valueInput.value = value;
+            slider.value = value;
 
-                if (!configName) {
-                    alert('Por favor, selecione uma configuração.');
-                    return;
-                }
+            updateValue(motor);
+        }
 
-                const allConfigsString = localStorage.getItem('allMotorConfigurations');
-                if (allConfigsString) {
-                    const allConfigs = JSON.parse(allConfigsString);
-
-                    if (allConfigs[configName]) {
-                        const config = allConfigs[configName];
-
-                        // Loop através dos motores e aplica os valores
-                        for (let i = 1; i <= 5; i++) {
-                            const motor = 'motor' + i;
-
-                            if (config[motor]) {
-                                const value_vel = config[motor].value_vel;
-                                const value = config[motor].value;
-                                const min = config[motor].min;
-                                const max = config[motor].max;
-
-                                // Atualiza os campos de mínimo e máximo
-                                document.getElementById(motor + '-min').value = min;
-                                document.getElementById(motor + '-max').value = max;
-                                updateRange(motor);
-
-                                // Atualiza o valor atual
-                                document.getElementById(motor + '-value_vel').value = value_vel;
-                                document.getElementById(motor + '-value').value = value;
-                                document.getElementById(motor + '-slider').value = value;
-                                updateValue(motor);
-                            }
-                        }
-                    } else {
-                        alert('Configuração não encontrada.');
-                    }
-                } else {
-                    alert('Nenhuma configuração salva encontrada.');
-                }
+        // Função para salvar a configuração atual
+        function saveConfiguration() {
+            const configName = prompt('Digite um nome para a configuração:');
+            if (!configName) {
+                alert('Nome inválido. Configuração não salva.');
+                return;
             }
 
-            // Função para atualizar o menu suspenso com as configurações salvas
-            function updateConfigurationsDropdown() {
-                const dropdown = document.getElementById('configurations-dropdown');
-                dropdown.innerHTML = '<option value="">Selecione uma Configuração</option>';
+            // Cria um objeto para armazenar as configurações
+            const config = {};
 
-                const allConfigsString = localStorage.getItem('allMotorConfigurations');
-                if (allConfigsString) {
-                    const allConfigs = JSON.parse(allConfigsString);
-                    for (const configName in allConfigs) {
-                        const option = document.createElement('option');
-                        option.value = configName;
-                        option.textContent = configName;
-                        dropdown.appendChild(option);
-                    }
-                }
-            }
+            // Loop através dos 5 motores
+            for (let i = 1; i <= 5; i++) {
+                const motor = 'motor' + i;
 
-            function changeText(element, newText) {
-                element.innerHTML = newText;
-            }
-            function testMotor(motor) {
+                // Obtém os valores atuais, mínimos e máximos
                 const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
                 const value = parseFloat(document.getElementById(motor + '-value').value);
-                let sentido = "Direita";
-                if (value < 0) {
-                    sentido = "Esquerda";
-                } else if (value == 0) {
-                    sentido = "Nao meche";
+                const min = parseFloat(document.getElementById(motor + '-min').value);
+                const max = parseFloat(document.getElementById(motor + '-max').value);
+
+                // Armazena os valores no objeto de configuração
+                config[motor] = {
+                    value_vel: value_vel,
+                    value: value,
+                    min: min,
+                    max: max
+                };
+            }
+
+            const inicio = document.getElementById('garra-inicio-select').value;
+            const final = document.getElementById('garra-final-select').value;
+
+            config['garra'] = {
+                garra_ini: inicio,
+                garra_final: final
+            };
+
+            // Recupera todas as configurações existentes ou inicia um novo objeto
+            const allConfigs = JSON.parse(localStorage.getItem('allMotorConfigurations')) || {};
+
+            // Adiciona a nova configuração
+            allConfigs[configName] = config;
+
+            // Salva todas as configurações atualizadas
+            localStorage.setItem('allMotorConfigurations', JSON.stringify(allConfigs));
+
+            // Atualiza o menu suspenso
+            updateConfigurationsDropdown();
+
+            alert('Configuração "' + configName + '" salva com sucesso!');
+        }
+
+        // Função para carregar a configuração selecionada
+        function loadSelectedConfiguration() {
+            const dropdown = document.getElementById('configurations-dropdown');
+            const configName = dropdown.value;
+
+            if (!configName) {
+                alert('Por favor, selecione uma configuração.');
+                return;
+            }
+
+            const allConfigsString = localStorage.getItem('allMotorConfigurations');
+            if (allConfigsString) {
+                const allConfigs = JSON.parse(allConfigsString);
+
+                if (allConfigs[configName]) {
+                    const config = allConfigs[configName];
+
+                    // Loop através dos motores e aplica os valores
+                    for (let i = 1; i <= 5; i++) {
+                        const motor = 'motor' + i;
+
+                        if (config[motor]) {
+                            const value_vel = config[motor].value_vel;
+                            const value = config[motor].value;
+                            const min = config[motor].min;
+                            const max = config[motor].max;
+
+                            // Atualiza os campos de mínimo e máximo
+                            document.getElementById(motor + '-min').value = min;
+                            document.getElementById(motor + '-max').value = max;
+                            updateRange(motor);
+
+                            // Atualiza o valor atual
+                            document.getElementById(motor + '-value_vel').value = value_vel;
+                            document.getElementById(motor + '-value').value = value;
+                            document.getElementById(motor + '-slider').value = value;
+                            updateValue(motor);
+                        }
+                    }
+                    document.getElementById('garra-inicio-select').value = config.garra.garra_ini;
+                    document.getElementById('garra-final-select').value = config.garra.garra_final;
+
+                } else {
+                    alert('Configuração não encontrada.');
                 }
-                const isConfirmed = confirm("Tem certeza que deseja testar o " + motor + "?\n" +
-                    "Velocidade: " + value_vel + "\n" +
-                    "Sentido: " + sentido + "\n" +
-                    "Qntd Rotação: " + Math.abs(value)
-                );
-                if (isConfirmed) {
-                    // Criar um objeto com os dados do motor
-                    let motorData = {};
-                    motorData[motor] = {
-                        value_vel: value_vel,
-                        value: Math.abs(value),
-                        sentido: sentido
-                    };
+            } else {
+                alert('Nenhuma configuração salva encontrada.');
+            }
+        }
 
-                    // Converter o objeto em uma string JSON
-                    let motorDataString = JSON.stringify(motorData);
+        // Função para atualizar o menu suspenso com as configurações salvas
+        function updateConfigurationsDropdown() {
+            const dropdown = document.getElementById('configurations-dropdown');
+            dropdown.innerHTML = '<option value="">Selecione uma Configuração</option>';
 
-                    // Enviar os dados para o ESP8266 usando fetch
-                    fetch('/testMotor', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: motorDataString
-                    })
+            const allConfigsString = localStorage.getItem('allMotorConfigurations');
+            if (allConfigsString) {
+                const allConfigs = JSON.parse(allConfigsString);
+                for (const configName in allConfigs) {
+                    const option = document.createElement('option');
+                    option.value = configName;
+                    option.textContent = configName;
+                    dropdown.appendChild(option);
+                }
+            }
+        }
+
+        function changeText(element, newText) {
+            element.innerHTML = newText;
+        }
+
+        function inverterSinais() {
+            for (let i = 1; i <= 5; i++) {
+                const motor = 'motor' + i;
+                const slider = document.getElementById(motor + '-slider');
+                const valueInput = document.getElementById(motor + '-value');
+
+                // Inverte o valor do slider e do campo de entrada
+                const currentValue = parseFloat(slider.value);
+                const invertedValue = -currentValue;
+
+                slider.value = invertedValue;
+                valueInput.value = invertedValue;
+
+                // Atualiza a visualização da rotação
+                updateValue(motor);
+            }
+        }
+
+        function setGarraInicio() {
+            const garraInicioSelect = document.getElementById('garra-inicio-select');
+            const garraInicioInput = document.getElementById('garra-inicio');
+            garraInicioInput.value = garraInicioSelect.value;
+        }
+
+        // Função para definir o estado de finalização da garra
+        function setGarraFinal() {
+            const garraFinalSelect = document.getElementById('garra-final-select');
+            const garraFinalInput = document.getElementById('garra-final');
+            garraFinalInput.value = garraFinalSelect.value;
+        }
+
+        function testMotor(motor) {
+            const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
+            const value = parseFloat(document.getElementById(motor + '-value').value);
+            let sentido = "Direita";
+            if (value > 0) {
+                sentido = "Esquerda";
+            } else if (value == 0) {
+                sentido = "Nao meche";
+            }
+            const isConfirmed = confirm("Tem certeza que deseja testar o " + motor + "?\n" +
+                "Velocidade: " + value_vel + "\n" +
+                "Sentido: " + sentido + "\n" +
+                "Qntd Rotação: " + Math.abs(value)
+            );
+            if (isConfirmed) {
+                // Criar um objeto com os dados do motor
+                let motorData = {};
+                motorData[motor] = {
+                    value_vel: value_vel,
+                    value: Math.abs(value),
+                    sentido: sentido
+                };
+
+                // Converter o objeto em uma string JSON
+                let motorDataString = JSON.stringify(motorData);
+
+                // Enviar os dados para o ESP8266 usando fetch
+                fetch('/testMotor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: motorDataString
+                })
                     .then(response => response.text())
                     .then(data => {
                         alert("Comando de teste enviado com sucesso!");
@@ -671,101 +790,153 @@ const char* htmlPage = R"rawliteral(
                         alert("Erro ao enviar comando de teste!");
                         console.error(error);
                     });
-                } else {
-                    alert("Teste cancelado.");
-                }
+            } else {
+                alert("Teste cancelado.");
             }
-// Declare as variáveis no escopo global
-let config = {};
-let configString = "";
-
-function Subir_todos() {
-    // Resetar as variáveis ao chamar a função
-    config = {};
-    configString = "";
-
-    // Inicializa o objeto config
-    for (let i = 1; i <= 5; i++) {
-        const motor = 'motor' + i;
-        const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
-        const value = parseFloat(document.getElementById(motor + '-value').value);
-
-        let sentido = "Direita";
-        if (value < 0) {
-            sentido = "Esquerda";
-        } else if (value == 0) {
-            sentido = "Nao meche";
         }
 
-        config[motor] = {
-            value_vel: value_vel,
-            value: Math.abs(value),
-            sentido: sentido
-        };
-    }
+        function testGarra() {
+            // Obtém os valores de início e final da garra
+            const garraInicioSelect = document.getElementById('garra-inicio-select').value;
+            const garraFinalSelect = document.getElementById('garra-final-select').value;
 
-    // Construir a string do conteúdo 
-    for (let motor in config) {
-        configString += motor + ":\n";
-        configString += "  Velocidade: " + config[motor].value_vel + "\n";
-        configString += "  Rotação: " + config[motor].value + "\n";
-        configString += "  Sentido: " + config[motor].sentido + "\n\n";
-    }
+            // Define os textos de estado para o início e final da garra
+            let inicioEstado = garraInicioSelect === 'Fechada' ? 'Fechada' : 'Aberta';
+            let finalEstado = garraFinalSelect === 'Fechada' ? 'Fechada' : 'Aberta';
 
-    // Exibir o modal com o conteúdo
-    document.getElementById('modal-text').innerText = configString;
-    openModal();    
-}
+            // Confirmação antes de enviar o comando de teste
+            const isConfirmed = confirm("Tem certeza que deseja testar a Garra?\n" +
+                "Início: " + inicioEstado + "\n" +
+                "Final: " + finalEstado
+            );
 
-// Função para abrir o modal
-function openModal() {
-    document.getElementById('confirmModal').style.display = 'block';
-}
+            if (isConfirmed) {
+                // Criar um objeto com os dados da garra
+                let garraData = {
+                    inicio: inicioEstado,
+                    final: finalEstado
+                };
 
-// Função para fechar o modal
-function closeModal() {
-    document.getElementById('confirmModal').style.display = 'none';
-}
+                // Converter o objeto em uma string JSON
+                let garraDataString = JSON.stringify(garraData);
 
-// Função para confirmar a ação
-document.getElementById('confirmButton').onclick = function() {
-    // Converter o objeto config em uma string JSON
-    let configJSON = JSON.stringify(config);
+                // Enviar os dados para o ESP8266 usando fetch
+                fetch('/testGarra', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: garraDataString
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert("Comando de teste da garra enviado com sucesso!");
+                    })
+                    .catch(error => {
+                        alert("Erro ao enviar comando de teste da garra!");
+                        console.error(error);
+                    });
+            } else {
+                alert("Teste da garra cancelado.");
+            }
+        }
 
-    fetch('/setMotor', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: configJSON
-    })
-    .then(response => response.text())
-    .then(data => {
-        alert("Comandos enviados com sucesso!");
-    })
-    .catch(error => {
-        alert("Erro ao enviar comandos!");
-        console.error(error);
-    });
-    closeModal(); // Fecha o modal após a confirmação
-};
+        // Declare as variáveis no escopo global
+        let config = {};
+        let configString = "";
+        function Subir_todos() {
+            // Resetar as variáveis ao chamar a função
+            config = {};
+            configString = "";
 
+            // Inicializa o objeto config para os motores
+            for (let i = 1; i <= 5; i++) {
+                const motor = 'motor' + i;
+                const value_vel = parseFloat(document.getElementById(motor + '-value_vel').value);
+                const value = parseFloat(document.getElementById(motor + '-value').value);
 
-            // Função para abrir o modal
-            function openModal() {
-                document.getElementById('confirmModal').style.display = 'block';
+                let sentido = "Direita";
+                if (value > 0) {
+                    sentido = "Esquerda";
+                } else if (value == 0) {
+                    sentido = "Nao meche";
+                }
+
+                config[motor] = {
+                    value_vel: value_vel,
+                    value: Math.abs(value),
+                    sentido: sentido
+                };
             }
 
-            // Função para fechar o modal
-            function closeModal() {
-                document.getElementById('confirmModal').style.display = 'none';
-            }
+            // Adicionar o estado da garra ao objeto config
+            const garraInicio = document.getElementById('garra-inicio-select').value;
+            const garraFinal = document.getElementById('garra-final-select').value;
 
-            // Chama a função para atualizar o menu suspenso ao carregar a página
-            window.onload = function() {
-                updateConfigurationsDropdown();
+            config["garra"] = {
+                inicio: garraInicio,
+                final: garraFinal
             };
-        </script>
+
+            // Construir a string do conteúdo (como antes)
+            for (let motor in config) {
+                if (motor === "garra") {
+                    configString += "Garra:\n";
+                    configString += "  Estado de Início: " + config[motor].inicio + "\n";
+                    configString += "  Estado de Final: " + config[motor].final + "\n\n";
+                } else {
+                    configString += motor + ":\n";
+                    configString += "  Velocidade: " + config[motor].value_vel + "\n";
+                    configString += "  Rotação: " + config[motor].value + "\n";
+                    configString += "  Sentido: " + config[motor].sentido + "\n\n";
+                }
+            }
+
+            // Exibir o modal com o conteúdo para visualização
+            document.getElementById('modal-text').innerText = configString;
+
+            // Abrir o modal para confirmar o envio
+            openModal();
+        }
+
+        // Função para abrir o modal
+        function openModal() {
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Função para confirmar a ação
+        document.getElementById('confirmButton').onclick = function () {
+            // Converter o objeto config em uma string JSON
+            let configJSON = JSON.stringify(config);
+
+            fetch('/setMotor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: configJSON
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert("Comandos enviados com sucesso!");
+                })
+                .catch(error => {
+                    alert("Erro ao enviar comandos!");
+                    console.error(error);
+                });
+            closeModal(); // Fecha o modal após a confirmação
+        };
+        
+        // Chama a função para atualizar o menu suspenso ao carregar a página
+        window.onload = function () {
+            updateConfigurationsDropdown();
+        };
+    </script>
 
     </div> <!-- Fecha o main-container -->
 </body>
@@ -809,6 +980,23 @@ void handleTestMotor() {
     server.send(405, "text/plain", "Método não permitido");
   }
 }
+void handleGarraRequest() {
+  if (server.method() == HTTP_POST) {
+    String motorData = server.arg("plain");
+
+    // Imprimir os valores recebidos no terminal serial do ESP8266
+    Serial.println("Dados de teste recebidos do site:");
+    Serial.println(motorData);
+
+    // Envia os dados para o Mega via comunicação serial
+    megaSerial.println("TESTE_G:" + motorData);
+
+    // Retorna uma resposta de sucesso para o navegador
+    server.send(200, "text/plain", "Comando de teste enviado ao Mega!");
+  } else {
+    server.send(405, "text/plain", "Método não permitido");
+  }
+}
 
 // Função para servir o HTML
 void handleRoot() {
@@ -834,7 +1022,8 @@ void setup() {
   // Inicia o servidor e define as rotas
   server.on("/", handleRoot);
   server.on("/setMotor", HTTP_POST, handleSetMotor);
-  server.on("/testMotor", HTTP_POST, handleTestMotor); // Nova rota para teste
+  server.on("/testMotor", HTTP_POST, handleTestMotor); 
+  server.on("/testGarra", HTTP_POST, handleGarraRequest);
 
   server.begin();
   Serial.println("Servidor iniciado.");
