@@ -2,7 +2,7 @@
 #include <ESP8266WebServer.h>
 #include <SoftwareSerial.h>
 
-// Defina as credenciais do Wi-Fi
+// Defina as cre  denciais do Wi-Fi
 const char* ssid = "Esp";
 const char* password = "12345678";
 

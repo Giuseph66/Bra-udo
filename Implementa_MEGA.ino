@@ -9,7 +9,7 @@ void mexe_todos(int pin_sentido_j_1, int pin_sentido_j_2, int pin_sentido_1, int
 
     // Mover a garra para a posição inicial
     Serial.print("Garra - Estado inicial: ");
-    Serial.println(garra_cmc ? "Aberta" : "Fechada");
+    Serial.println(garra_cmc);
     mover_garra(garra_cmc);
 
     // Definir o sentido dos motores (somente se não for "3")
@@ -75,6 +75,6 @@ void mexe_todos(int pin_sentido_j_1, int pin_sentido_j_2, int pin_sentido_1, int
 
     // Mover a garra para a posição final
     Serial.print("Garra - Estado final: ");
-    Serial.println(garra_fnl ? "Aberta" : "Fechada");
+    Serial.println(garra_fnl);
     mover_garra(garra_fnl);
 }

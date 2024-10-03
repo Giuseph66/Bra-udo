@@ -35,7 +35,7 @@ String garraFinal = "";
 void setup() {
   Serial.begin(9600);       // Comunicação com o Monitor Serial
   Serial1.begin(9600);      // Comunicação com o ESP8266
-  servoMotor.attach(12); 
+  servoMotor.attach(4); 
 
 
   Serial.println("Arduino Mega pronto para receber dados do ESP8266...");
@@ -106,8 +106,8 @@ void loop() {
         processJsonData(jsonData);
         printMotorList();
 
-        bool manda_ida = (inicioEstado[0] == 'A');
-        bool manda_fnl = (finalEstado[0] == 'A');
+        bool manda_ida = (garraInicio[1] == 'A');
+        bool manda_fnl = (garraFinal[1] == 'A');
 
         
       mexe_todos(motorPins[1].pin_senti, motorPins[1].pin_senti_2,motorPins[0].pin_senti, motorPins[2].pin_senti,motorPins[3].pin_senti,motorPins[4].pin_senti,
@@ -121,18 +121,25 @@ void loop() {
         String jsonData = data.substring(8); // Remove "TESTE_G:"
         Serial.println("Processando TESTE_G:");
         Serial.println(jsonData);
+        processGarra(jsonData);
 
-        if (inicioEstado[0] == 'A') {
+        if (inicioEstado[1] == 'A') {
+          Serial.println(inicioEstado);
+          Serial.println("aq");
           mover_garra(1);
         } else {
+          Serial.println(inicioEstado);
           mover_garra(0);
         }
 
-        delay(2000);
+        delay(3000);
 
-        if (finalEstado[0] == 'A') {
+        if (finalEstado[1] == 'A') {
+          Serial.println(finalEstado);
           mover_garra(1);
         } else {
+          Serial.println("Cula");
+          Serial.println(finalEstado);
           mover_garra(0);
         }
 
@@ -141,31 +148,28 @@ void loop() {
       }
     }
   }
-}
+}void processGarra(String jsonData) {
 
-  //gira_2_motor_base(Pin_senti_52,Pin_senti_53,1,Pin_control_50,Pin_control_51,350,10000);
-
-void processGarra(String jsonData){
-  int inicioPos = jsonData.indexOf("\"inicio\":\"");
+  int inicioPos = jsonData.indexOf("\"inicio\"");
   if (inicioPos != -1) {
-    int start = inicioPos + 9;  // Posição inicial após "inicio":"
-    int end = jsonData.indexOf("\"", start);  // Posição final do valor de "inicio"
+    int start = inicioPos + 9;  // Posição inicial após "inicio":" 
+    int end = jsonData.indexOf(",", start);  // Posição final do valor de "inicio"
     inicioEstado = jsonData.substring(start, end);
   }
 
-  // Localiza e extrai o valor de "final"
-  int finalPos = jsonData.indexOf("\"final\":\"");
+  int finalPos = jsonData.indexOf("\"final\"");
   if (finalPos != -1) {
-    int start = finalPos + 8;  // Posição inicial após "final":"
-    int end = jsonData.indexOf("\"", start);  // Posição final do valor de "final"
+    int start = finalPos + 8;  // Posição inicial após "final":" 
+    int end = jsonData.indexOf("}", start);  // Posição final do valor de "final"
     finalEstado = jsonData.substring(start, end);
   }
-
-  // Agora temos os valores de "inicioEstado" e "finalEstado"
-  Serial.println("Estado de início: " + inicioEstado);
-  Serial.println("Estado de final: " + finalEstado);
-
+  Serial.print("Estado de início da garra: ");
+  Serial.println(inicioEstado);
+  Serial.print("Estado de final da garra: ");
+  Serial.println(finalEstado);
 }
+
+
 void processJsonData(String jsonData) {
   int cont = 0;
   int motorNumber = 0;
@@ -223,42 +227,44 @@ void processJsonData(String jsonData) {
       }
     }
 
-    // Processamento dos dados da garra
     if (jsonData.substring(i, i + 7) == "\"garra\"") {
-      i += 7;
+      Serial.println("caminho");
+      int start, end;
 
-      if (jsonData.substring(i, i + 9) == "\"inicio\":\"") {
-        int start = jsonData.indexOf(":", i) + 2;
-        int end = jsonData.indexOf("\"", start);
-        garraInicio = jsonData.substring(start, end);
-        i = end;
-
-        if (garraInicio == "Aberta") {
-          Serial.println("Estado de Início da Garra: Aberta");
-        } else if (garraInicio == "Fechada") {
-          Serial.println("Estado de Início da Garra: Fechada");
-        } else {
-          Serial.println("Estado de Início da Garra: Indefinido");
-        }
+  int inicioPos = jsonData.indexOf("\"inicio\"");
+  if (inicioPos != -1) {
+    int start = inicioPos + 9;  // Posição inicial após "inicio":" 
+    int end = jsonData.indexOf(",", start);  // Posição final do valor de "inicio"
+    garraInicio = jsonData.substring(start, end);
+    Serial.println(garraInicio);
+  }
+      if (garraInicio[1] == 'A') {
+        Serial.println("Estado de Início da Garra: Aberta");
+      } else if (garraInicio[1] == 'F') {
+        Serial.println("Estado de Início da Garra: Fechada");
+      } else {
+        Serial.println("Estado de Início da Garra: Indefinido");
       }
 
-      if (jsonData.substring(i, i + 8) == "\"final\":\"") {
-        int start = jsonData.indexOf(":", i) + 2;
-        int end = jsonData.indexOf("\"", start);
-        garraFinal = jsonData.substring(start, end);
-        i = end;
+      // Extrair o valor de "final"
 
-        if (garraFinal == "Aberta") {
-          Serial.println("Estado de Final da Garra: Aberta");
-        } else if (garraFinal == "Fechada") {
-          Serial.println("Estado de Final da Garra: Fechada");
-        } else {
-          Serial.println("Estado de Final da Garra: Indefinido");
-        }
+  int finalPos = jsonData.indexOf("\"final\"");
+  if (finalPos != -1) {
+    int start = finalPos + 8;  // Posição inicial após "final":" 
+    int end = jsonData.indexOf("}", start);  // Posição final do valor de "final"
+    garraFinal = jsonData.substring(start, end);
+    Serial.println(garraFinal);
+  }
+      // Verificar o valor de "final"
+      if (garraFinal[1] == 'A') {
+        Serial.println("Estado de Final da Garra: Aberta");
+      } else if (garraFinal[1] == 'F') {
+        Serial.println("Estado de Final da Garra: Fechada");
+      } else {
+        Serial.println("Estado de Final da Garra: Indefinido");
+      }
       }
     }
-
-}
   Serial.println("Processamento concluído.\n");
 }
 
@@ -318,8 +324,9 @@ void mexe_todos(int pin_sentido_j_1, int pin_sentido_j_2, int pin_sentido_1, int
                 bool garra_cmc, bool garra_fnl) {
 
     // Mover a garra para a posição inicial
+
     Serial.print("Garra - Estado inicial: ");
-    Serial.println(garra_cmc ? "Aberta" : "Fechada");
+    Serial.println(garra_cmc);
     mover_garra(garra_cmc);
 
     // Verificação do sentido dos motores J1 e J2 (somente se não for "3")
@@ -432,14 +439,16 @@ void mexe_todos(int pin_sentido_j_1, int pin_sentido_j_2, int pin_sentido_1, int
 
     // Mover a garra para a posição final
     Serial.print("Garra - Estado final: ");
-    Serial.println(garra_fnl ? "Aberta" : "Fechada");
+    Serial.println(garra_fnl);
     mover_garra(garra_fnl);
 }
 
 void mover_garra(bool depende){
   if(depende){
-  servoMotor.write(120); 
-  }else{
   servoMotor.write(0); 
+    Serial.println("Vo");
+  }else{
+    Serial.println("No");
+  servoMotor.write(80); 
   }             
 }
