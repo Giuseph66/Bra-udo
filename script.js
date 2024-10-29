@@ -190,10 +190,11 @@ function loadSelectedConfiguration() {
     }
 }
 
-// Função para atualizar o menu suspenso com as configurações salvas
 function updateConfigurationsDropdown() {
     const dropdown = document.getElementById('configurations-dropdown');
     dropdown.innerHTML = '<option value="">Selecione uma Configuração</option>';
+    const input = document.getElementById('command-input');
+    input.innerHTML = '<option value="">Selecione uma Configuração</option>';
 
     const allConfigsString = localStorage.getItem('allMotorConfigurations');
     if (allConfigsString) {
@@ -203,6 +204,7 @@ function updateConfigurationsDropdown() {
             option.value = configName;
             option.textContent = configName;
             dropdown.appendChild(option);
+            input.appendChild(option);
         }
     }
 }
@@ -436,7 +438,7 @@ let isLooping = false;
 
 // Função para adicionar um comando à lista
 function addCommand() {
-    const commandInput = document.getElementById("configurations-dropdown");
+    const commandInput = document.getElementById("command-input");
     const commandText = commandInput.value.trim();
 
     if (commandText === "") {

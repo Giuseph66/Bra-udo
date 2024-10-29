@@ -1,23 +1,17 @@
-/* Estilo geral */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1e1e2e;
-    color: #f0f0f0;
+    background-color: #f0f2f5;
     margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    color: #333;
 }
 
 /* Cabeçalho */
 header {
-    background-color: #ff7f50;
-    color: #ffffff;
-    padding: 20px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px 0;
     text-align: center;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 header h1 {
@@ -32,7 +26,7 @@ header p {
 
 /* Rodapé */
 footer {
-    background-color: #ff7f50;
+    background-color: #007bff;
     color: white;
     text-align: center;
     padding: 10px 0;
@@ -50,6 +44,7 @@ footer p {
     margin: 0 10px;
     transition: color 0.3s ease;
 }
+
 /* Contêiner Principal */
 .main-container {
     display: flex;
@@ -57,7 +52,7 @@ footer p {
     justify-content: center;
     padding: 20px;
     margin-bottom: 60px;
-    color: #ffffff;
+    /* Espaço para o rodapé */
 }
 
 .sober_conteiner {
@@ -67,28 +62,47 @@ footer p {
 
 /* Estilo dos Motores */
 .container {
-    background: #282a36;
+    background: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: 300px;
     height: auto;
-    margin: 15px;
+    margin: 15px auto;
     text-align: center;
     transition: transform 0.2s ease;
-    color: #f0f0f0;
 }
 
 .container h2 {
     margin-top: 0;
-    color: #ff7f50;
+    color: #007bff;
 }
 
-/* Estilo dos Sliders */
 .slider-label {
     font-weight: bold;
     margin-top: 20px;
-    color: #f0f0f0;
+}
+
+.slider-values {
+    flex-direction: column;
+}
+
+.slider-values input {
+    font-size: 20px;
+}
+
+.slider-values,
+.slider-controls {
+    font-size: 20px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-values label,
+.slider-controls label {
+    width: 48%;
 }
 
 input[type="number"],
@@ -96,17 +110,17 @@ input[type="range"] {
     width: 100%;
     padding: 6px;
     margin-top: 5px;
-    border: 1px solid #444;
+    border: 1px solid #ccc;
     border-radius: 4px;
     text-align: center;
-    background-color: #444;
-    color: #ffffff;
 }
 
+/* Estilo do Slider */
 input[type="range"] {
     -webkit-appearance: none;
     height: 6px;
-    background: #555;
+    border-radius: 5px;
+    background: #ddd;
     outline: none;
     margin-top: 15px;
 }
@@ -116,9 +130,41 @@ input[type="range"]::-webkit-slider-thumb {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #ff7f50;
+    background: #007bff;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Visualização do Ângulo */
+.angle-visual-container {
+    height: 100px;
+    width: 100%;
+    background-color: #f9f9f9;
+    position: relative;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.angle-visual {
+    width: 4px;
+    height: 90px;
+    background-color: #007bff;
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform-origin: bottom center;
+    transition: transform 0.2s ease;
+    border-radius: 2px;
 }
 
 /* Botões de Configuração */
@@ -134,50 +180,45 @@ input[type="range"]::-webkit-slider-thumb {
     margin: 5px 10px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #ff7f50;
-    color: #ffffff;
+}
+
+.config-buttons button {
+    background-color: #007bff;
+    color: #fff;
     border: none;
     border-radius: 4px;
 }
 
 .config-buttons button:hover {
-    background-color: #ff6347;
+    background-color: #0056b3;
 }
 
 .config-buttons select {
-    background-color: #444;
-    color: #ffffff;
-    border: 1px solid #555;
     padding: 10px;
     font-size: 16px;
     border-radius: 4px;
-    transition: background-color 0.2s ease;
+    border: 1px solid #ccc;
 }
 
-/* Visualização do Ângulo */
-.angle-visual-container {
-    height: 100px;
-    width: 100%;
-    background-color: #333;
-    position: relative;
-    margin: 20px 0;
-    border: 1px solid #444;
+/* Estilo para transformar o h2 em um botão */
+h2 {
+    padding: 10px 20px;
+    margin: 10px 0;
     border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.5em;
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
-.angle-visual {
-    width: 4px;
-    height: 90px;
-    background-color: #ff7f50;
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform-origin: bottom center;
-    transition: transform 0.2s ease;
-    border-radius: 2px;
+h2:hover {
+    background-color: #0056b3;
 }
 
-/* Modal */
+h2:active {
+    background-color: #003f7f;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -187,12 +228,11 @@ input[type="range"]::-webkit-slider-thumb {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-    background-color: #282a36;
-    color: #f0f0f0;
+    background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -203,7 +243,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .modal button {
-    background-color: #ff7f50;
+    background-color: #007bff;
     border: none;
     color: white;
     padding: 10px 20px;
@@ -215,34 +255,52 @@ input[type="range"]::-webkit-slider-thumb {
     transition: background-color 0.3s ease;
 }
 
-/* Botões dentro da lista de comandos */
-.command-container ul {
-    list-style-type: none;
-    padding: 0;
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-.command-container li {
-    padding: 10px;
-    background-color: #444;
-    border: 1px solid #555;
-    border-radius: 5px;
-    margin: 5px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: #f0f0f0;
-}
-
-.command-container li button {
-    background-color: #ff6347;
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: none;
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.command-container li button:hover {
-    background-color: #ff4500;
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 1.1em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s ease;
+}
+
+select:hover {
+    background-color: #f1f1f1;
+}
+
+/* Título da Garra */
+#garra-title {
+    margin-top: 0;
+    font-size: 1.8em;
+    color: #007bff;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+#garra-title:hover {
+    color: #0056b3;
+}
+
+/* Animação para o contêiner da garra */
+#garra-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsividade */
