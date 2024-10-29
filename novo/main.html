@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organização de Comandos</title>
+    <link rel="stylesheet" href="stilo.css">
+</head>
+
+<body>
+    <header>
+        <h1>Organização de Comandos para Execução Sequencial</h1>
+    </header>
+
+    <div class="command-container">
+        <label for="command-input">Novo Comando:</label>
+        <input type="text" id="command-input" placeholder="Digite o comando" />
+        <button onclick="addCommand()">Adicionar Comando</button>
+
+        <h2>Lista de Comandos</h2>
+        <ul id="command-list"></ul>
+
+        <label>
+            <input type="checkbox" id="loop-toggle">
+            Executar em Loop
+        </label>
+        
+        <button onclick="executeCommands()">Executar Sequência</button>
+    </div>
+
+
+    <script src="javinha.js"></script>
+</body>
+
+</html>
